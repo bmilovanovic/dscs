@@ -1,0 +1,47 @@
+<resources>
+
+    <string name="app_name">DSCS</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="pref_title_jobs">Choose job</string>
+    <string name="pref_summary_jobs">Job currently working on: </string>
+
+    <string name="pref_title_clear_tables">Clear tables</string>
+    <string name="pref_summary_clear_tables">Delete content from data tables</string>
+
+    <string name="pref_title_number_of_tasks">Number of tasks</string>
+    <string name="pref_summary_number_of_tasks">Current number of tasks to execute: </string>
+    <string name="pref_default_number_of_tasks">10</string>
+
+    <string name="pref_title_crawling_delay">Crawling delay</string>
+    <string name="pref_summary_crawling_delay">Delay between tasks crawling[ms]:</string>
+    <string name="pref_default_crawling_delay">1000</string>
+
+    <string name="pref_title_init_tasks">Initialize tasks</string>
+
+    <string name="pref_title_launch_memory_game">Launch memory game</string>
+
+    <!-- StartFragment -->
+    <string name="if_play_circle_outline">&#xE039;</string>
+    <string name="if_pause_circle_outline">&#xE036;</string>
+    <string name="if_sentiment_very_satisfied">&#xE815;</string>
+
+    <!-- PreviewFragment -->
+    <string name="if_task_status_invalid">&#xE629;</string>
+    <string name="if_task_status_done">&#xE876;</string>
+    <string name="if_task_status_inserted">&#xE628;></string>
+    <string name="if_task_status_in_progress">&#xE627;</string>
+
+    <!-- Toast messages -->
+    <string name="toast_empty_table">The %s table is empty!</string>
+    <string name="toast_all_tables_cleared">All tables have been cleared.</string>
+    <string name="toast_all_tasks_done">DSCS: All tasks are done.</string>
+
+    <!-- Notification messages -->
+    <string name="notification_deleting_items_from_table">Deleting items from %s</string>
+    <string name="notification_clearing_tables">Clearing tables…</string>
+    <string name="notification_job_finished">A job is finished!</string>
+    <string name="notification_all_tasks_done">All tasks for %s are done.</string>
+
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/tableSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/preview_fragment_padding"
+        android:layout_marginRight="@dimen/preview_fragment_padding"
+        android:layout_marginTop="@dimen/preview_fragment_padding" />
+
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/list"
+            android:name="com.example.dscs.TaskFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/preview_fragment_padding"
+            android:layout_marginRight="@dimen/preview_fragment_padding"
+            android:scrollbars="vertical"
+            app:layoutManager="LinearLayoutManager"
+            tools:context="com.example.dscs.PreviewFragment"
+            tools:listitem="@layout/fragment_preview_list_item_task" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>
