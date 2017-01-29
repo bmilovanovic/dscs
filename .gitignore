@@ -34,7 +34,8 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
 
 # Keystore files
 *.jks
