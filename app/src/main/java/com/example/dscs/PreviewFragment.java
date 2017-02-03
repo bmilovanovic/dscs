@@ -33,7 +33,6 @@ public class PreviewFragment extends Fragment {
 
     private ListView mListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private Spinner mSpinnerView;
     private List<Class> mDomainClasses = new ArrayList<>();
 
     @Override
@@ -48,37 +47,14 @@ public class PreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_preview_layout, container, false);
 
-        setupSpinner(contentView);
         setupRefreshingLayout(contentView);
 
         return contentView;
     }
 
-    private void setupSpinner(View rootView) {
-        mSpinnerView = (Spinner) rootView.findViewById(R.id.tableSpinner);
-        mSpinnerView.setAdapter(getSpinnerAdapter());
-        mSpinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                refresh();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-    }
-
-    private SpinnerAdapter getSpinnerAdapter() {
-        List<String> classNamesList = new ArrayList<>();
-        for (Class clazz : mDomainClasses) {
-            classNamesList.add(clazz.getSimpleName());
-        }
-
-        ArrayAdapter adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, classNamesList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return adapter;
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        refresh();
     }
 
     private void setupRefreshingLayout(View rootView) {
@@ -95,26 +71,16 @@ public class PreviewFragment extends Fragment {
     }
 
     private void refresh() {
-        if (mSpinnerView != null && mSwipeRefreshLayout != null && !mDomainClasses.isEmpty()) {
+        if (mSwipeRefreshLayout != null && !mDomainClasses.isEmpty()) {
             mSwipeRefreshLayout.setRefreshing(true);
-            final Class clazz = mDomainClasses.get(mSpinnerView.getSelectedItemPosition());
-
-            final boolean isTaskTable = Task.class.equals(clazz);
 
             final Handler handler = new Handler();
             final Context context = getActivity();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ListAdapter adapter;
-                    if (isTaskTable) {
-                        ArrayList<PreviewTaskAdapter.TaskPreview> list = getTaskItemsList(context);
-                        adapter = new PreviewTaskAdapter(context, list);
-                    } else {
-                        @SuppressWarnings("unchecked")
-                        ArrayList<Object> list = getItems(clazz);
-                        adapter = new PreviewAdapter<>(context, list);
-                    }
+                    ArrayList<PreviewTaskAdapter.TaskPreview> list = getTaskItemsList(context);
+                    ListAdapter adapter = new PreviewTaskAdapter(context, list);
 
                     setPreviewAdapter(adapter);
                 }
@@ -126,7 +92,7 @@ public class PreviewFragment extends Fragment {
                             if (adapter.getCount() > 0) {
                                 mListView.setAdapter(adapter);
                             } else {
-                                UiUtils.showEmptyTableToast(context, clazz);
+                                UiUtils.showEmptyTableToast(context, Task.class);
                                 mListView.setAdapter(null);
                             }
                             mSwipeRefreshLayout.setRefreshing(false);
@@ -135,18 +101,6 @@ public class PreviewFragment extends Fragment {
                 }
             }).start();
         }
-    }
-
-    private <E> ArrayList<E> getItems(final Class<E> clazz) {
-
-        ArrayList<E> list = new ArrayList<>();
-        try {
-            list = Network.getTable(getActivity(), clazz).where().execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return list;
     }
 
     private ArrayList<PreviewTaskAdapter.TaskPreview> getTaskItemsList(Context context) {
