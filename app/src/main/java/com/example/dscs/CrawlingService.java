@@ -43,8 +43,12 @@ public class CrawlingService extends Service {
             mTaskTable = Network.getTable(getApplicationContext(), Task.class);
 
             int delay = PreferenceUtility.getCrawlingDelay(getApplicationContext());
-            while (processNextTask()) {
+            while (!Thread.currentThread().isInterrupted() && processNextTask()) {
                 SystemClock.sleep(delay);
+            }
+
+            if (Thread.currentThread().isInterrupted()) {
+                return;
             }
 
             if (mBinder.mJobListener.get() != null) {
@@ -63,7 +67,7 @@ public class CrawlingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: ");
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -120,9 +124,18 @@ public class CrawlingService extends Service {
         MobileServiceList<Task> submittedTasksList = mTaskTable.where(query).execute().get();
         Log.d(TAG, "Unprocessed tasks: " + submittedTasksList.size());
         if (submittedTasksList.size() > 0) {
+            // Take next task ready for processing
             Task nextTask = submittedTasksList.get(0);
             updateTaskStatus(nextTask, Task.IN_PROGRESS);
+
+            // Parse the task
+            mBinder.mJobListener.get().dispatchTaskStatusChange(getString(
+                    R.string.parsing_task_with_key, nextTask.getKey()));
             Storable parsedItem = mCurrentJob.parseTask(getApplicationContext(), nextTask.getKey());
+
+            // Store the task
+            mBinder.mJobListener.get().dispatchTaskStatusChange(getString(
+                    R.string.storing_task_with_key, nextTask.getKey()));
             if (parsedItem != null) {
                 parsedItem.store();
                 updateTaskStatus(nextTask, Task.DONE);
@@ -140,11 +153,11 @@ public class CrawlingService extends Service {
     }
 
     public class CrawlingServiceBinder extends Binder {
-        WeakReference<OnJobFinishedListener> mJobListener = new WeakReference<>(null);
+        WeakReference<JobListener> mJobListener = new WeakReference<>(null);
         private boolean mIsFinished = false;
 
         void setOnJobFinishedListener(StartFragment onJobFinishedListener) {
-            mJobListener = new WeakReference<OnJobFinishedListener>(onJobFinishedListener);
+            mJobListener = new WeakReference<JobListener>(onJobFinishedListener);
         }
 
         boolean isFinished() {
@@ -152,7 +165,9 @@ public class CrawlingService extends Service {
         }
     }
 
-    public interface OnJobFinishedListener {
+    public interface JobListener {
         void onJobFinished();
+
+        void dispatchTaskStatusChange(String statusMessage);
     }
 }

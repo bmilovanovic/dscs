@@ -48,8 +48,7 @@ class MovieJob extends Job {
                 initTasks(context);
             }
         } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Couldn't connect to the Azure! Tasks initialization stopped.");
-            e.printStackTrace();
+            Log.e(TAG, "Couldn't connect to the Azure! Tasks initialization stopped.", e);
         }
     }
 

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,13 @@ import android.widget.TextView;
  * Basic fragment for starting/stopping crawling service.
  */
 public class StartFragment extends Fragment implements View.OnClickListener,
-        CrawlingService.OnJobFinishedListener {
+        CrawlingService.JobListener {
 
     private static final String TAG = StartFragment.class.getSimpleName();
 
     private TextView mStartButton;
+    private TextView mJobInfoTextView;
+    private TextView mTaskInfoTextView;
     private CrawlingService.CrawlingServiceBinder mBinder;
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -35,14 +38,14 @@ public class StartFragment extends Fragment implements View.OnClickListener,
             Log.i(TAG, "Service is connected.");
             mBinder = (CrawlingService.CrawlingServiceBinder) service;
             mBinder.setOnJobFinishedListener(StartFragment.this);
-            refreshButtonState(false);
+            refreshButtonState();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.i(TAG, "Service is disconnected.");
             mBinder = null;
-            refreshButtonState(false);
+            refreshButtonState();
         }
     };
 
@@ -60,19 +63,21 @@ public class StartFragment extends Fragment implements View.OnClickListener,
         mStartButton = (TextView) view.findViewById(R.id.start_button);
         mStartButton.setOnClickListener(this);
 
+        mJobInfoTextView = (TextView) view.findViewById(R.id.job_info_text_view);
+        mTaskInfoTextView = (TextView) view.findViewById(R.id.task_info_text_view);
+
         return view;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         startAndBindService();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        refreshButtonState(false);
+        refreshButtonState();
     }
 
     @Override
@@ -101,11 +106,21 @@ public class StartFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onJobFinished() {
-        Log.e(TAG, "onJobFinished: " + (mBinder));
+        Log.i(TAG, "onJobFinished: " + mBinder);
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                refreshButtonState(true);
+                refreshButtonState();
+            }
+        });
+    }
+
+    @Override
+    public void dispatchTaskStatusChange(final String statusMessage) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                mTaskInfoTextView.setText(statusMessage);
             }
         });
     }
@@ -129,37 +144,39 @@ public class StartFragment extends Fragment implements View.OnClickListener,
         return false;
     }
 
-    private void refreshButtonState(boolean animateChange) {
-        final int color;
+    private void refreshButtonState() {
+        final int colorId;
         final Animation animation;
         if (isCrawlingServiceRunning()) {
             if (mBinder != null && mBinder.isFinished()) {
-                color = Color.BLUE;
+                colorId = android.R.color.holo_green_dark;
                 animation = null;
                 mStartButton.setText(getString(R.string.if_sentiment_very_satisfied));
+                mJobInfoTextView.setText(getString(R.string.notification_job_finished));
             } else {
                 mStartButton.setText(getString(R.string.if_pause_circle_outline));
-                color = Color.RED;
+                mJobInfoTextView.setText(getString(R.string.info_job_in_progress));
+                colorId = android.R.color.holo_red_light;
                 animation = UiUtils.getRotatingAnimation();
             }
         } else {
             mStartButton.setText(getString(R.string.if_play_circle_outline));
-            color = Color.GREEN;
+            mJobInfoTextView.setText(getString(R.string.info_click_to_start_crawling));
+            colorId = android.R.color.holo_blue_light;
             animation = UiUtils.getTiltingAnimation();
         }
-        if (animateChange) {
-            mStartButton.startAnimation(UiUtils.getChangingAnimation());
+
+        if (animation != null) {
+            mStartButton.startAnimation(animation);
+        } else {
+            mStartButton.setAnimation(null);
         }
+
         mStartButton.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mStartButton.setTextColor(ContextCompat.getColor(getActivity(), colorId));
                 mStartButton.setEnabled(true);
-                mStartButton.setTextColor(color);
-                if (animation != null) {
-                    mStartButton.startAnimation(animation);
-                } else {
-                    mStartButton.setAnimation(null);
-                }
             }
         }, 3000);
     }
