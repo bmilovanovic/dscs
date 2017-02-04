@@ -1,4 +1,4 @@
-package com.example.dscs;
+package com.example.dscs.preview;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -9,13 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 
+import com.example.dscs.Network;
+import com.example.dscs.utility.PreferenceUtility;
+import com.example.dscs.R;
+import com.example.dscs.Task;
+import com.example.dscs.utility.UiUtils;
 import com.example.movie.tables.Film;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
 import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
@@ -39,7 +40,7 @@ public class PreviewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDomainClasses.add(Task.class);
-        mDomainClasses.addAll(PreferenceUtility.getCurrentJob(getActivity()).getAllDomainClasses());
+        mDomainClasses.addAll(PreferenceUtility.getCurrentJob().getAllDomainClasses());
         setHasOptionsMenu(true);
     }
 

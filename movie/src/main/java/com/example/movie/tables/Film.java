@@ -7,6 +7,11 @@ import android.text.TextUtils;
  */
 public class Film {
 
+    public static final String CATEGORY_YEAR = "Godina";
+    public static final String CATEGORY_SYNOPSIS = "Sadržaj";
+    public static final String CATEGORY_DURATION = "Trajanje";
+    public static final String CATEGORY_TECHNIQUE = "Tehnika";
+
     @com.google.gson.annotations.SerializedName("id")
     private String mId;
 

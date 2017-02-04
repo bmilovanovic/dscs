@@ -5,13 +5,13 @@ import android.text.TextUtils;
 /**
  * Represents an item in a Task list
  */
-class Task {
+public class Task {
 
-    static final int INVALID = -1;
-    static final int INSERTED = 0;
-    static final int SUBMITTED = 1;
-    static final int IN_PROGRESS = 2;
-    static final int DONE = 3;
+    public static final int INVALID = -1;
+    public static final int INSERTED = 0;
+    public static final int SUBMITTED = 1;
+    public static final int IN_PROGRESS = 2;
+    public static final int DONE = 3;
 
     @com.google.gson.annotations.SerializedName("status")
     private int mStatus;
@@ -35,7 +35,7 @@ class Task {
         mId = id;
     }
 
-    int getStatus() {
+    public int getStatus() {
         return mStatus;
     }
 

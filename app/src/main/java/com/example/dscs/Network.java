@@ -3,6 +3,7 @@ package com.example.dscs;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.dscs.utility.PreferenceUtility;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
@@ -14,14 +15,14 @@ import java.util.concurrent.TimeUnit;
 /**
  * Wrapper class for connecting to the azure database.
  */
-class Network {
+public class Network {
 
     private static final String TAG = Network.class.getSimpleName();
 
-    static MobileServiceClient getClient(Context context) {
+    public static MobileServiceClient getClient(Context context) {
         MobileServiceClient client = null;
         try {
-            client = new MobileServiceClient(PreferenceUtility.getCurrentJob(context).getAzureUrl(), context);
+            client = new MobileServiceClient(PreferenceUtility.getCurrentJob().getAzureUrl(), context);
 
             // Extend timeout from default of 10s to 20s
             client.setAndroidHttpClientFactory(new OkHttpClientFactory() {
@@ -39,7 +40,7 @@ class Network {
         return client;
     }
 
-    static <E> MobileServiceTable<E> getTable(Context context, Class<E> clazz) {
+    public static <E> MobileServiceTable<E> getTable(Context context, Class<E> clazz) {
         return getClient(context).getTable(clazz);
     }
 }

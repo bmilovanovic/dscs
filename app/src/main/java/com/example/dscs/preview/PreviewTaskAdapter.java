@@ -1,14 +1,20 @@
-package com.example.dscs;
+package com.example.dscs.preview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.example.dscs.utility.IconFont;
+import com.example.dscs.R;
+import com.example.dscs.Task;
 
 import java.util.ArrayList;
 
@@ -39,8 +45,27 @@ class PreviewTaskAdapter extends ArrayAdapter<PreviewTaskAdapter.TaskPreview> {
         hld.mTitleView.setText(getItem(position).title);
         hld.mIfStatus.setText(hld.mFilmIdView.getContext().getText(R.string.if_task_status_done));
         setupStatusIcon(hld.mIfStatus, getItem(position).status);
+        setupClickListener(convertView);
 
         return convertView;
+    }
+
+    private void setupClickListener(View itemView) {
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ViewHolder hld = (ViewHolder) v.getTag();
+                final String movieName = String.valueOf(hld.mTitleView.getText());
+
+                if (!TextUtils.isEmpty(movieName)) {
+                    Intent movieInfoIntent = new Intent(getContext(), MovieInfoActivity.class);
+                    movieInfoIntent.putExtra(MovieInfoActivity.EXTRA_MOVIE_KEY,
+                            Integer.parseInt(String.valueOf(hld.mFilmIdView.getText())));
+                    movieInfoIntent.putExtra(MovieInfoActivity.EXTRA_MOVIE_TITLE, movieName);
+                    getContext().startActivity(movieInfoIntent);
+                }
+            }
+        });
     }
 
     private void setupStatusIcon(IconFont mIfStatus, int status) {

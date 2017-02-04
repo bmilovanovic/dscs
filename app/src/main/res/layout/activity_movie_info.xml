@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/movie_info_margin">
+
+            <TextView
+                android:id="@+id/activity_movie_info_key_text_view"
+                android:layout_width="@dimen/movie_info_thumbnail_width"
+                android:layout_height="@dimen/movie_info_thumbnail_width"
+                android:layout_marginEnd="@dimen/movie_info_margin"
+                android:layout_marginRight="@dimen/movie_info_margin"
+                android:background="@color/preference_fallback_accent_color"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/movie_info_thumbnail_text_size"
+                tools:ignore="SpUsage" />
+
+            <TextView
+                android:id="@+id/activity_movie_info_title_text_view"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:textSize="@dimen/movie_info_title_text_size" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_movie_info_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/activity_movie_info_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/movie_info_thumbnail_text_size" />
+
+    </LinearLayout>
+</RelativeLayout>

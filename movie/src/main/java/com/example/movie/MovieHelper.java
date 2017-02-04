@@ -167,4 +167,43 @@ public class MovieHelper {
 
         return list;
     }
+
+    public static Role getRole(MobileServiceClient client, int roleId) throws ExecutionException, InterruptedException {
+        if (sRoles.isEmpty()) {
+            sRoles = client.getTable(Role.class)
+                    .where().orderBy("roleId", QueryOrder.Ascending).execute().get();
+        }
+        for (Role role : sRoles) {
+            if (roleId == role.getRoleId()) {
+                return role;
+            }
+        }
+        return null;
+    }
+
+    public static Country getCountry(MobileServiceClient client, int countryId) throws ExecutionException, InterruptedException {
+        if (sCountries.isEmpty()) {
+            sCountries = client.getTable(Country.class)
+                    .where().orderBy("countryId", QueryOrder.Ascending).execute().get();
+        }
+        for (Country country : sCountries) {
+            if (countryId == country.getCountryId()) {
+                return country;
+            }
+        }
+        return null;
+    }
+
+    public static Genre getGenre(MobileServiceClient client, int genreId) throws ExecutionException, InterruptedException {
+        if (sGenres.isEmpty()) {
+            sGenres = client.getTable(Genre.class)
+                    .where().orderBy("genreId", QueryOrder.Ascending).execute().get();
+        }
+        for (Genre genre : sGenres) {
+            if (genreId == genre.getGenreId()) {
+                return genre;
+            }
+        }
+        return null;
+    }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Single encapsulation for an app-wide job that is being processed.
  */
-abstract class Job {
+abstract public class Job {
 
     /**
      * Every job has the results that need to be stored somewhere. Find it via url.
@@ -32,7 +32,7 @@ abstract class Job {
      *
      * @return List of domain classes
      */
-    abstract List<Class> getAllDomainClasses();
+    abstract public List<Class> getAllDomainClasses();
 
     /**
      * If there's something that needs to be done upon starting a job, it's place is here.

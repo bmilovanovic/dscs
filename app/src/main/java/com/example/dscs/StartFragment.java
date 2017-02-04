@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
+import com.example.dscs.utility.UiUtils;
+
 /**
  * Basic fragment for starting/stopping crawling service.
  */
@@ -78,14 +80,6 @@ public class StartFragment extends Fragment implements View.OnClickListener,
     public void onResume() {
         super.onResume();
         refreshButtonState();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (isCrawlingServiceRunning() && mServiceConnection != null) {
-            getActivity().unbindService(mServiceConnection);
-        }
     }
 
     @Override
@@ -175,8 +169,10 @@ public class StartFragment extends Fragment implements View.OnClickListener,
         mStartButton.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mStartButton.setTextColor(ContextCompat.getColor(getActivity(), colorId));
-                mStartButton.setEnabled(true);
+                if (getActivity() != null) {
+                    mStartButton.setTextColor(ContextCompat.getColor(getActivity(), colorId));
+                    mStartButton.setEnabled(true);
+                }
             }
         }, 3000);
     }

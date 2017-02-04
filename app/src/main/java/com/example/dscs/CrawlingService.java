@@ -8,6 +8,8 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.example.aninterface.Storable;
+import com.example.dscs.utility.PreferenceUtility;
+import com.example.dscs.utility.UiUtils;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.microsoft.windowsazure.mobileservices.table.query.Query;
@@ -60,7 +62,11 @@ public class CrawlingService extends Service {
                         mCurrentJob.getClass().getSimpleName());
             }
 
-            logLife();
+            if (BuildConfig.DEBUG) {
+                logLife();
+            } else {
+                stopSelf();
+            }
         }
     });
 
@@ -96,7 +102,7 @@ public class CrawlingService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mCurrentJob = PreferenceUtility.getCurrentJob(getBaseContext());
+        mCurrentJob = PreferenceUtility.getCurrentJob();
         mWorkingThread.start();
     }
 

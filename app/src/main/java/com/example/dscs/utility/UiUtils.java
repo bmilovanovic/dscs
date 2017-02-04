@@ -1,4 +1,4 @@
-package com.example.dscs;
+package com.example.dscs.utility;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,25 +13,28 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Toast;
 
+import com.example.dscs.MainActivity;
+import com.example.dscs.R;
+
 /**
  * A place for various screen interaction: toasts, notifications, animations.
  */
-class UiUtils {
+public class UiUtils {
 
     private static int NOTIFICATION_ID_CLEARING_TABLES = 1;
     @SuppressWarnings("FieldCanBeLocal")
     private static int NOTIFICATION_ID_ALL_TASKS_DONE = 2;
 
     // Toasts
-    static void showClearedTablesToast(final Context context) {
+    public static void showClearedTablesToast(final Context context) {
         showToast(context, context.getString(R.string.toast_all_tables_cleared));
     }
 
-    static void showEmptyTableToast(Context context, Class clazz) {
+    public static void showEmptyTableToast(Context context, Class clazz) {
         showToast(context, context.getString(R.string.toast_empty_table, clazz.getSimpleName()));
     }
 
-    static void showAllTasksDoneToast(Context context) {
+    public static void showAllTasksDoneToast(Context context) {
         showToast(context, context.getString(R.string.toast_all_tasks_done));
     }
 
@@ -46,13 +49,13 @@ class UiUtils {
 
 
     // Notifications
-    static void hideClearingTablesNotification(Context context) {
+    public static void hideClearingTablesNotification(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.
                 getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(NOTIFICATION_ID_CLEARING_TABLES);
     }
 
-    static void showClearingTablesNotification(Context context, String className) {
+    public static void showClearingTablesNotification(Context context, String className) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(context.getString(R.string.notification_clearing_tables))
@@ -62,7 +65,7 @@ class UiUtils {
         notificationManager.notify(NOTIFICATION_ID_CLEARING_TABLES, builder.build());
     }
 
-    static void showJobFinishedNotification(Context context, String jobName) {
+    public static void showJobFinishedNotification(Context context, String jobName) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(context.getString(R.string.notification_job_finished))
@@ -76,11 +79,11 @@ class UiUtils {
     }
 
     // Animations
-    static Animation getRotatingAnimation() {
+    public static Animation getRotatingAnimation() {
         return getCircularAnimation(360.f, 2000, -1);
     }
 
-    static Animation getTiltingAnimation() {
+    public static Animation getTiltingAnimation() {
         Animation animationStart = getCircularAnimation(5.0f, 500, -1);
         Animation animationToLeft = getCircularAnimation(-10.0f, 500, -1);
         Animation animationToRight = getCircularAnimation(10.0f, 500, -1);
@@ -91,30 +94,6 @@ class UiUtils {
         set.addAnimation(animationToRight);
         set.setRepeatCount(-1);
 
-        return set;
-    }
-
-    static Animation getChangingAnimation() {
-        Animation animationStart = new ScaleAnimation(
-                1f, 0.2f, // Start and end values for the X axis scaling
-                1f, 0.2f, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
-        animationStart.setFillAfter(true);
-        animationStart.setDuration(500);
-
-        Animation animationEnd = new ScaleAnimation(1f, 5f, 1f, 5f,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animationEnd.setFillAfter(true);
-        animationEnd.setDuration(1000);
-        animationEnd.setStartOffset(500);
-
-        AnimationSet set = new AnimationSet(true);
-        set.addAnimation(animationStart);
-        for (int i = 0; i < 8; i++) {
-            set.addAnimation(getCircularAnimation(360.0f, 1500, 1));
-        }
-        set.addAnimation(animationEnd);
         return set;
     }
 

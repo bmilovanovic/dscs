@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.aninterface.Storable;
+import com.example.dscs.utility.PreferenceUtility;
 import com.example.movie.MovieHelper;
 import com.example.movie.MovieTask;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
@@ -19,7 +20,7 @@ import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperati
 /**
  * Concrete implementation of an application job.
  */
-class MovieJob extends Job {
+public class MovieJob extends Job {
 
     private static final String TAG = MovieJob.class.getSimpleName();
 

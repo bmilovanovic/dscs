@@ -9,6 +9,8 @@ import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
 
+import com.example.dscs.utility.PreferenceUtility;
+import com.example.dscs.utility.UiUtils;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
@@ -56,7 +58,7 @@ public class SettingsFragment extends PreferenceFragment {
                     public void run() {
                         switch (newValue) {
                             case 1:
-                                for (Class clazz : PreferenceUtility.getCurrentJob(getActivity())
+                                for (Class clazz : PreferenceUtility.getCurrentJob()
                                         .getAllDomainClasses()) {
                                     clearTable(clazz);
                                 }

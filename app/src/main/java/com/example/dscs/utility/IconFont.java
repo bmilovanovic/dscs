@@ -1,4 +1,4 @@
-package com.example.dscs;
+package com.example.dscs.utility;
 
 import android.content.Context;
 import android.graphics.Typeface;
