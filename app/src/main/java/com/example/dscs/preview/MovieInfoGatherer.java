@@ -101,7 +101,7 @@ class MovieInfoGatherer {
         Film film = mClient.getTable(Film.class).where(mFilmQuery).execute().get().get(0);
 
         MovieInfoActivity.MovieQuery query = new MovieInfoActivity.MovieQuery(film.getPremiere(),
-                Film.class, film.getFilmId(), "premiere");
+                Film.class, Integer.parseInt(film.getPremiere()), "premiere");
         addIfNotEmpty(list, Film.CATEGORY_YEAR, film.getPremiere(), query);
         addIfNotEmpty(list, Film.CATEGORY_SYNOPSIS, film.getSynopsis(), null);
         addIfNotEmpty(list, Film.CATEGORY_DURATION, film.getDuration(), null);
@@ -150,7 +150,12 @@ class MovieInfoGatherer {
     List<MovieAdapter.MovieItem> getAllMovies(MovieInfoActivity.MovieQuery query) {
         List<MovieAdapter.MovieItem> items = new ArrayList<>();
 
-        Query tableQuery = QueryOperations.field(query.field).eq(val(query.id));
+        Query tableQuery;
+        if (TextUtils.equals(query.field, "premiere")) {
+            tableQuery = QueryOperations.field(query.field).eq(val(String.valueOf(query.id)));
+        } else {
+            tableQuery = QueryOperations.field(query.field).eq(val(query.id));
+        }
         try {
             MobileServiceList list = (MobileServiceList)
                     mClient.getTable(query.clazz).where(tableQuery).execute().get();
