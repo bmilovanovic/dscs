@@ -58,11 +58,11 @@ public class Task {
 
     @Override
     public String toString() {
-        return mKey + "\t\t" + getStatusDescription();
+        return mKey + "\t\t" + getStatusDescription(mStatus);
     }
 
-    private String getStatusDescription() {
-        switch (mStatus) {
+    public static String getStatusDescription(int status) {
+        switch (status) {
             case INSERTED:
                 return "Inserted";
             case SUBMITTED:

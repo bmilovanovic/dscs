@@ -128,7 +128,7 @@ public class CrawlingService extends Service {
     private boolean processNextTaskAmong(int taskStatus) throws ExecutionException, InterruptedException {
         Query query = QueryOperations.field("status").eq(val(taskStatus));
         MobileServiceList<Task> submittedTasksList = mTaskTable.where(query).execute().get();
-        Log.d(TAG, "Unprocessed tasks: " + submittedTasksList.size());
+        Log.d(TAG, "Unprocessed " + Task.getStatusDescription(taskStatus) + " tasks: " + submittedTasksList.size());
         if (submittedTasksList.size() > 0) {
             // Take next task ready for processing
             Task nextTask = submittedTasksList.get(0);

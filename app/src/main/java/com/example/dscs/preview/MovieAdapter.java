@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Adapter for showing all movie info.
  */
-class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieInfoViewHolder> {
+class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieInfoViewHolder> implements View.OnClickListener {
 
     private final Context mContext;
 
@@ -31,13 +31,17 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieInfoViewHolder
     public MovieInfoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(mContext)
                 .inflate(R.layout.movie_info_item, null);
+        view.setOnClickListener(this);
         return new MovieInfoViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MovieInfoViewHolder holder, int position) {
-        holder.categoryTextView.setText(mItems.get(position).category);
-        holder.valueTextView.setText(mItems.get(position).value);
+        MovieItem item = mItems.get(position);
+
+        holder.categoryTextView.setText(item.category);
+        holder.valueTextView.setText(item.value);
+        holder.setTag(item.query);
     }
 
     @Override
@@ -45,16 +49,23 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieInfoViewHolder
         return mItems.size();
     }
 
+    @Override
+    public void onClick(View v) {
+        ((View.OnClickListener) mContext).onClick(v);
+    }
+
     static class MovieItem {
         String category;
         String value;
+        MovieInfoActivity.MovieQuery query;
 
-        MovieItem(String category, String value) {
+        MovieItem(String category, String value, MovieInfoActivity.MovieQuery query) {
             this.category = category;
             if (!TextUtils.isEmpty(category)) {
                 this.category = category.substring(0, 1).toUpperCase() + category.substring(1);
             }
             this.value = value;
+            this.query = query;
         }
     }
 
@@ -67,6 +78,10 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieInfoViewHolder
             super(itemView);
             categoryTextView = (TextView) itemView.findViewById(R.id.text_view_movie_info_category);
             valueTextView = (TextView) itemView.findViewById(R.id.text_view_movie_info_value);
+        }
+
+        void setTag(MovieInfoActivity.MovieQuery query) {
+            ((View) categoryTextView.getParent()).setTag(query);
         }
     }
 }
