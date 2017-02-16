@@ -64,9 +64,8 @@ public class CrawlingService extends Service {
 
             if (BuildConfig.DEBUG) {
                 logLife();
-            } else {
-                stopSelf();
             }
+            stopSelf();
         }
     });
 
