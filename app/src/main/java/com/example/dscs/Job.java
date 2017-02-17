@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.aninterface.Storable;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Single encapsulation for an app-wide job that is being processed.
@@ -39,5 +40,5 @@ abstract public class Job {
      *
      * @param context Context for networking
      */
-    abstract void init(Context context);
+    abstract void init(Context context) throws ExecutionException, InterruptedException;
 }

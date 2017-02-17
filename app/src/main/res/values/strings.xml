@@ -50,4 +50,12 @@
     <string name="parsing_task_with_key">…parsing task with key %d…</string>
     <string name="storing_task_with_key">…storing task with key %d…</string>
 
+    <!-- Game messages -->
+    <string name="activity_game_score">Rezultat: %d</string>
+    <string name="activity_game_do_you_want_to_start_again">Postigli ste %d poena. Da li želite da igrate ponovo?</string>
+    <string name="activity_game_game_over">Kraj igre!</string>
+    <string name="yes">Da</string>
+    <string name="no">Ne</string>
+    <string name="activity_game_starting_level">Starting level %d...</string>
+
 </resources>

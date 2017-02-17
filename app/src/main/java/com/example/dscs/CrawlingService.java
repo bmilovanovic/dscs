@@ -40,30 +40,34 @@ public class CrawlingService extends Service {
             mBinder.mIsFinished = false;
             Log.d(TAG, "Working thread just started working on a " +
                     mCurrentJob.getClass().getSimpleName());
-            mCurrentJob.init(getApplicationContext());
+            try {
+                mCurrentJob.init(getApplicationContext());
 
-            mTaskTable = Network.getTable(getApplicationContext(), Task.class);
+                mTaskTable = Network.getTable(getApplicationContext(), Task.class);
 
-            int delay = PreferenceUtility.getCrawlingDelay(getApplicationContext());
-            while (!Thread.currentThread().isInterrupted() && processNextTask()) {
-                SystemClock.sleep(delay);
-            }
+                int delay = PreferenceUtility.getCrawlingDelay(getApplicationContext());
+                while (!Thread.currentThread().isInterrupted() && processNextTask()) {
+                    SystemClock.sleep(delay);
+                }
 
-            if (Thread.currentThread().isInterrupted()) {
-                return;
-            }
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
+                }
 
-            if (mBinder.mJobListener.get() != null) {
-                UiUtils.showAllTasksDoneToast(getApplicationContext());
-                mBinder.mIsFinished = true;
-                mBinder.mJobListener.get().onJobFinished();
-            } else {
-                UiUtils.showJobFinishedNotification(getBaseContext(),
-                        mCurrentJob.getClass().getSimpleName());
-            }
+                if (mBinder.mJobListener.get() != null) {
+                    UiUtils.showAllTasksDoneToast(getApplicationContext());
+                    mBinder.mIsFinished = true;
+                    mBinder.mJobListener.get().onJobFinished();
+                } else {
+                    UiUtils.showJobFinishedNotification(getBaseContext(),
+                            mCurrentJob.getClass().getSimpleName());
+                }
 
-            if (BuildConfig.DEBUG) {
-                logLife();
+                if (BuildConfig.DEBUG) {
+                    logLife();
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e(TAG, "Couldn't connect to the Azure. Service stopped.", e);
             }
             stopSelf();
         }

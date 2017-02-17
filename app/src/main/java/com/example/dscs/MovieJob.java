@@ -43,13 +43,9 @@ public class MovieJob extends Job {
     }
 
     @Override
-    void init(Context context) {
-        try {
-            if (PreferenceUtility.shouldInitTasks(context)) {
-                initTasks(context);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Couldn't connect to the Azure! Tasks initialization stopped.", e);
+    void init(Context context) throws ExecutionException, InterruptedException {
+        if (PreferenceUtility.shouldInitTasks(context)) {
+            initTasks(context);
         }
     }
 

@@ -12,14 +12,15 @@
 
     <TextView
         android:id="@+id/preview_item_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/preview_fragment_padding" />
+        android:layout_margin="@dimen/preview_fragment_padding"
+        android:layout_weight="1" />
 
     <com.example.dscs.utility.IconFont
         android:id="@+id/preview_item_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="end|center"
         android:layout_margin="@dimen/preview_fragment_padding"
         android:gravity="end" />

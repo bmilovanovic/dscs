@@ -5,7 +5,7 @@
     android:versionName="1.0">
 
     <uses-sdk
-        android:minSdkVersion="16"
+        android:minSdkVersion="17"
         android:targetSdkVersion="25" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -33,6 +33,9 @@
         <activity
             android:name=".preview.MovieInfoActivity"
             android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
+        <activity
+            android:name=".game.GameActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service
             android:name=".CrawlingService"

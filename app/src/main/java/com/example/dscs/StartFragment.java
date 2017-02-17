@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
+import com.example.dscs.game.GameActivity;
 import com.example.dscs.utility.UiUtils;
 
 /**
@@ -67,6 +68,14 @@ public class StartFragment extends Fragment implements View.OnClickListener,
 
         mStartButton = (TextView) view.findViewById(R.id.start_button);
         mStartButton.setOnClickListener(this);
+        mStartButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(getActivity(), GameActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
 
         mJobInfoTextView = (TextView) view.findViewById(R.id.job_info_text_view);
         mTaskInfoTextView = (TextView) view.findViewById(R.id.task_info_text_view);
@@ -175,6 +184,7 @@ public class StartFragment extends Fragment implements View.OnClickListener,
                 animation = null;
                 mStartButton.setText(getString(R.string.if_sentiment_very_satisfied));
                 mJobInfoTextView.setText(getString(R.string.notification_job_finished));
+                mTaskInfoTextView.setText("");
             } else {
                 mStartButton.setText(getString(R.string.if_pause_circle_outline));
                 mJobInfoTextView.setText(getString(R.string.info_job_in_progress));
@@ -184,6 +194,7 @@ public class StartFragment extends Fragment implements View.OnClickListener,
         } else {
             mStartButton.setText(getString(R.string.if_play_circle_outline));
             mJobInfoTextView.setText(getString(R.string.info_click_to_start_crawling));
+            mTaskInfoTextView.setText("");
             colorId = android.R.color.holo_blue_light;
             animation = UiUtils.getTiltingAnimation();
         }
