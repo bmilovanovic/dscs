@@ -12,18 +12,18 @@ import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.dscs.utility.IconFont;
 import com.example.dscs.R;
-import com.example.dscs.Task;
+import com.example.dscs.job.Task;
+import com.example.dscs.utility.IconFont;
 
 import java.util.ArrayList;
 
 /**
  * Adapter for displaying task status and film names.
  */
-class PreviewTaskAdapter extends ArrayAdapter<PreviewTaskAdapter.TaskPreview> {
+class PreviewAdapter extends ArrayAdapter<PreviewAdapter.TaskPreview> {
 
-    PreviewTaskAdapter(Context context, ArrayList<TaskPreview> items) {
+    PreviewAdapter(Context context, ArrayList<TaskPreview> items) {
         super(context, 0, items);
     }
 
@@ -41,26 +41,31 @@ class PreviewTaskAdapter extends ArrayAdapter<PreviewTaskAdapter.TaskPreview> {
             hld = (ViewHolder) convertView.getTag();
         }
 
-        hld.mFilmIdView.setText(String.valueOf(getItem(position).key));
-        hld.mTitleView.setText(getItem(position).title);
-        hld.mIfStatus.setText(hld.mFilmIdView.getContext().getText(R.string.if_task_status_done));
-        setupStatusIcon(hld.mIfStatus, getItem(position).status);
+        hld.mFilmIdTextView.setText(String.valueOf(getItem(position).key));
+        hld.mTitleTextView.setText(getItem(position).title);
+        hld.mIconFont.setText(hld.mFilmIdTextView.getContext().getText(R.string.if_task_status_done));
+        setupStatusIcon(hld.mIconFont, getItem(position).status);
         setupClickListener(convertView);
 
         return convertView;
     }
 
+    /**
+     * Sets click listener on the item.
+     *
+     * @param itemView Item.
+     */
     private void setupClickListener(View itemView) {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final ViewHolder hld = (ViewHolder) v.getTag();
-                final String movieName = String.valueOf(hld.mTitleView.getText());
+                final String movieName = String.valueOf(hld.mTitleTextView.getText());
 
                 if (!TextUtils.isEmpty(movieName)) {
                     Intent movieInfoIntent = new Intent(getContext(), MovieInfoActivity.class);
                     movieInfoIntent.putExtra(MovieInfoActivity.EXTRA_MOVIE_KEY,
-                            Integer.parseInt(String.valueOf(hld.mFilmIdView.getText())));
+                            Integer.parseInt(String.valueOf(hld.mFilmIdTextView.getText())));
                     movieInfoIntent.putExtra(MovieInfoActivity.EXTRA_MOVIE_TITLE, movieName);
                     getContext().startActivity(movieInfoIntent);
                 }
@@ -68,7 +73,13 @@ class PreviewTaskAdapter extends ArrayAdapter<PreviewTaskAdapter.TaskPreview> {
         });
     }
 
-    private void setupStatusIcon(IconFont mIfStatus, int status) {
+    /**
+     * Sets the task icon.
+     *
+     * @param iconFont View to set the icon on it.
+     * @param status   Task icon.
+     */
+    private void setupStatusIcon(IconFont iconFont, int status) {
         int stringId = 0;
         int colorId = 0;
         switch (status) {
@@ -86,7 +97,7 @@ class PreviewTaskAdapter extends ArrayAdapter<PreviewTaskAdapter.TaskPreview> {
                 colorId = android.R.color.holo_blue_light;
                 RotateAnimation animation = new RotateAnimation(0, 360);
                 animation.setDuration(0);
-                mIfStatus.setAnimation(animation);
+                iconFont.setAnimation(animation);
                 break;
             case Task.DONE:
                 stringId = R.string.if_task_status_done;
@@ -94,24 +105,24 @@ class PreviewTaskAdapter extends ArrayAdapter<PreviewTaskAdapter.TaskPreview> {
                 break;
         }
 
-        mIfStatus.setText(mIfStatus.getContext().getString(stringId));
-        mIfStatus.setTextColor(ContextCompat.getColor(getContext(), colorId));
+        iconFont.setText(iconFont.getContext().getString(stringId));
+        iconFont.setTextColor(ContextCompat.getColor(getContext(), colorId));
     }
 
     private static class ViewHolder {
-        final TextView mFilmIdView;
-        final TextView mTitleView;
-        final IconFont mIfStatus;
+        final TextView mFilmIdTextView;
+        final TextView mTitleTextView;
+        final IconFont mIconFont;
 
         ViewHolder(View view) {
-            mFilmIdView = (TextView) view.findViewById(R.id.preview_item_key);
-            mTitleView = (TextView) view.findViewById(R.id.preview_item_title);
-            mIfStatus = (IconFont) view.findViewById(R.id.preview_item_status);
+            mFilmIdTextView = (TextView) view.findViewById(R.id.preview_item_key);
+            mTitleTextView = (TextView) view.findViewById(R.id.preview_item_title);
+            mIconFont = (IconFont) view.findViewById(R.id.preview_item_status);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mTitleView.getText() + "'";
+            return super.toString() + " '" + mTitleTextView.getText() + "'";
         }
     }
 

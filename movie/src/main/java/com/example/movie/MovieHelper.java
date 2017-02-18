@@ -32,6 +32,15 @@ public class MovieHelper {
     private static ArrayList<Country> sCountries = new ArrayList<>();
     private static ArrayList<Role> sRoles = new ArrayList<>();
 
+    /**
+     * Gets genre object from a name.
+     *
+     * @param client    Network client.
+     * @param genreName Name of a genre.
+     * @return Genre.
+     * @throws ExecutionException   Error connecting to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     static Genre getGenre(MobileServiceClient client, String genreName)
             throws ExecutionException, InterruptedException {
         // Try to find genreName in local genre list
@@ -67,6 +76,15 @@ public class MovieHelper {
         return newGenre;
     }
 
+    /**
+     * Gets country object from a name.
+     *
+     * @param client      Network client.
+     * @param countryName Name of a country.
+     * @return Country.
+     * @throws ExecutionException   Error connecting to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     static Country getCountry(MobileServiceClient client, String countryName)
             throws ExecutionException, InterruptedException {
         // Try to find countryName in local country list
@@ -97,6 +115,15 @@ public class MovieHelper {
         return newCountry;
     }
 
+    /**
+     * Gets role object from a name.
+     *
+     * @param client   Network client.
+     * @param roleName Name of a role.
+     * @return Role.
+     * @throws ExecutionException   Error connecting to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     static Role getRole(MobileServiceClient client, String roleName)
             throws ExecutionException, InterruptedException {
         // Try to find roleName in local role list
@@ -127,6 +154,15 @@ public class MovieHelper {
         return newRole;
     }
 
+    /**
+     * Gets person object from a name.
+     *
+     * @param client     Network client.
+     * @param personName Name of a person.
+     * @return Person.
+     * @throws ExecutionException   Error connecting to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     static Person getPerson(MobileServiceClient client, String personName) throws
             ExecutionException, InterruptedException {
         // Fetch all the persons from the azure table
@@ -153,6 +189,11 @@ public class MovieHelper {
         return person;
     }
 
+    /**
+     * Gets all table classes specific to this job.
+     *
+     * @return List of classes.
+     */
     public static List<Class> getAllDomainClasses() {
         ArrayList<Class> list = new ArrayList<>();
 
@@ -168,6 +209,15 @@ public class MovieHelper {
         return list;
     }
 
+    /**
+     * Gets role object from an id.
+     *
+     * @param client Network client.
+     * @param roleId Unique role identifier.
+     * @return Role.
+     * @throws ExecutionException   Error connecting to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     public static Role getRole(MobileServiceClient client, int roleId) throws ExecutionException, InterruptedException {
         if (sRoles.isEmpty()) {
             sRoles = client.getTable(Role.class)
@@ -181,6 +231,15 @@ public class MovieHelper {
         return null;
     }
 
+    /**
+     * Gets country object from an id.
+     *
+     * @param client    Network client.
+     * @param countryId Unique country identifier.
+     * @return Country.
+     * @throws ExecutionException   Error connecting to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     public static Country getCountry(MobileServiceClient client, int countryId) throws ExecutionException, InterruptedException {
         if (sCountries.isEmpty()) {
             sCountries = client.getTable(Country.class)
@@ -194,6 +253,15 @@ public class MovieHelper {
         return null;
     }
 
+    /**
+     * Gets genre object from an id.
+     *
+     * @param client  Network client.
+     * @param genreId Unique genre identifier.
+     * @return Genre.
+     * @throws ExecutionException   Error connecting to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     public static Genre getGenre(MobileServiceClient client, int genreId) throws ExecutionException, InterruptedException {
         if (sGenres.isEmpty()) {
             sGenres = client.getTable(Genre.class)

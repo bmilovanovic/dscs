@@ -13,9 +13,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.example.dscs.Network;
-import com.example.dscs.utility.PreferenceUtility;
 import com.example.dscs.R;
-import com.example.dscs.Task;
+import com.example.dscs.job.Task;
+import com.example.dscs.utility.PreferenceUtility;
 import com.example.dscs.utility.UiUtils;
 import com.example.movie.tables.Film;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * A fragment that fetches data from the azure and presents it in a list.
+ * A fragment that fetches domain data from the Azure and presents it in a list.
  */
 public class PreviewFragment extends Fragment {
 
@@ -58,6 +58,11 @@ public class PreviewFragment extends Fragment {
         refresh();
     }
 
+    /**
+     * Sets swipe up to refresh layout.
+     *
+     * @param rootView The highest view in the hierarchy.
+     */
     private void setupRefreshingLayout(View rootView) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -71,6 +76,9 @@ public class PreviewFragment extends Fragment {
         mListView.setAdapter(null);
     }
 
+    /**
+     * Refresh the preview list.
+     */
     private void refresh() {
         if (mSwipeRefreshLayout != null && !mDomainClasses.isEmpty()) {
             mSwipeRefreshLayout.setRefreshing(true);
@@ -80,8 +88,8 @@ public class PreviewFragment extends Fragment {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ArrayList<PreviewTaskAdapter.TaskPreview> list = getTaskItemsList(context);
-                    ListAdapter adapter = new PreviewTaskAdapter(context, list);
+                    ArrayList<PreviewAdapter.TaskPreview> list = getTaskItemsList(context);
+                    ListAdapter adapter = new PreviewAdapter(context, list);
 
                     setPreviewAdapter(adapter);
                 }
@@ -104,8 +112,14 @@ public class PreviewFragment extends Fragment {
         }
     }
 
-    private ArrayList<PreviewTaskAdapter.TaskPreview> getTaskItemsList(Context context) {
-        ArrayList<PreviewTaskAdapter.TaskPreview> list = new ArrayList<>();
+    /**
+     * Forms a list of a task and film tables.
+     *
+     * @param context Context for networking.
+     * @return List of the items to display.
+     */
+    private ArrayList<PreviewAdapter.TaskPreview> getTaskItemsList(Context context) {
+        ArrayList<PreviewAdapter.TaskPreview> list = new ArrayList<>();
         try {
             MobileServiceList<Task> tasks =
                     Network.getTable(context, Task.class).where()
@@ -125,7 +139,7 @@ public class PreviewFragment extends Fragment {
                     }
                 }
 
-                PreviewTaskAdapter.TaskPreview item = new PreviewTaskAdapter.TaskPreview();
+                PreviewAdapter.TaskPreview item = new PreviewAdapter.TaskPreview();
                 item.key = taskId;
                 item.status = task.getStatus();
                 if (taskId == filmId) {

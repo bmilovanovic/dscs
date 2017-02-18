@@ -55,6 +55,12 @@ public class MovieTask extends MovieBean implements Parsable, Storable {
         return this;
     }
 
+    /**
+     * Connects to the web and downloads the page based on movie id.
+     *
+     * @return HTML in a Document form
+     * @throws IOException Error in connection.
+     */
     private Document getDocumentFromKey() throws IOException {
         String url = "http://www.filmovi.com/yu/film/" + mFilmId + ".shtml";
         return Jsoup.connect(url).get();
@@ -139,6 +145,9 @@ public class MovieTask extends MovieBean implements Parsable, Storable {
         }).start();
     }
 
+    /**
+     * For each movie attribute, do proper storing to Azure.
+     */
     private void storeFilm() {
         MobileServiceTable<Film> filmTable = mClient.getTable(Film.class);
         MobileServiceTable<FilmGenre> filmGenreTable = mClient.getTable(FilmGenre.class);

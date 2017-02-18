@@ -1,9 +1,9 @@
-package com.example.dscs;
+package com.example.dscs.job;
 
 import android.text.TextUtils;
 
 /**
- * Represents an item in a Task list
+ * Represents an item in a Task list.
  */
 public class Task {
 
@@ -22,7 +22,7 @@ public class Task {
     @com.google.gson.annotations.SerializedName("id")
     private String mId;
 
-    Task(int filmId, int status) {
+    public Task(int filmId, int status) {
         mKey = filmId;
         mStatus = status;
     }
@@ -39,7 +39,7 @@ public class Task {
         return mStatus;
     }
 
-    void setStatus(int status) {
+    public void setStatus(int status) {
         mStatus = status;
     }
 
@@ -61,6 +61,12 @@ public class Task {
         return mKey + "\t\t" + getStatusDescription(mStatus);
     }
 
+    /**
+     * For each state a task can be in, provides description.
+     *
+     * @param status State of a task.
+     * @return Textual description.
+     */
     public static String getStatusDescription(int status) {
         switch (status) {
             case INSERTED:

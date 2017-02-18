@@ -57,5 +57,6 @@
     <string name="yes">Da</string>
     <string name="no">Ne</string>
     <string name="activity_game_starting_level">Starting level %d...</string>
+    <string name="toast_no_internet">There is no internet connection!</string>
 
 </resources>

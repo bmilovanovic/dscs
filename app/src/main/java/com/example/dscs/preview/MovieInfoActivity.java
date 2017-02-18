@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.example.dscs.R;
 import com.example.movie.tables.Film;
-import com.microsoft.windowsazure.mobileservices.table.query.Query;
 
 import java.util.List;
 
@@ -25,12 +24,8 @@ public class MovieInfoActivity extends Activity implements View.OnClickListener 
     public static final String EXTRA_MOVIE_KEY = "movie_key";
     public static final String EXTRA_MOVIE_TITLE = "movie_name";
 
-    private static final String TAG = MovieInfoActivity.class.getSimpleName();
-    private Query mFilmQuery;
-
     private TextView mKeyTextView;
     private TextView mTitleTextView;
-
     private RecyclerView mRecycler;
     private ProgressBar mProgressBar;
 
@@ -54,6 +49,11 @@ public class MovieInfoActivity extends Activity implements View.OnClickListener 
         showInfo(query);
     }
 
+    /**
+     * Shows movie info.
+     *
+     * @param query Query to gather information upon.
+     */
     private void showInfo(final MovieQuery query) {
         mKeyTextView.setText(String.valueOf(query.id));
         mTitleTextView.setText(query.title);
@@ -64,15 +64,15 @@ public class MovieInfoActivity extends Activity implements View.OnClickListener 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<MovieAdapter.MovieItem> list;
+                List<MovieInfoAdapter.MovieItem> list;
                 if (query.clazz.equals(Film.class) && TextUtils.equals(query.field, "title")) {
                     // Display one movie with all attributes
-                    list = new MovieInfoGatherer(MovieInfoActivity.this).getAllMovieAttributes(query.id);
+                    list = new MovieInfoDownloader(MovieInfoActivity.this).getAllMovieAttributes(query.id);
                 } else {
                     // Display list of movies for certain attribute
-                    list = new MovieInfoGatherer(MovieInfoActivity.this).getAllMovies(query);
+                    list = new MovieInfoDownloader(MovieInfoActivity.this).getAllMovies(query);
                 }
-                final MovieAdapter adapter = new MovieAdapter(MovieInfoActivity.this, list);
+                final MovieInfoAdapter adapter = new MovieInfoAdapter(MovieInfoActivity.this, list);
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {

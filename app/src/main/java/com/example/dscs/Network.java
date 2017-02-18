@@ -19,6 +19,12 @@ public class Network {
 
     private static final String TAG = Network.class.getSimpleName();
 
+    /**
+     * Gets a client bound to the Azure.
+     *
+     * @param context Context.
+     * @return MobileServiceClient instance.
+     */
     public static MobileServiceClient getClient(Context context) {
         MobileServiceClient client = null;
         try {
@@ -40,6 +46,14 @@ public class Network {
         return client;
     }
 
+    /**
+     * Binds to the table on Azure.
+     *
+     * @param context Context for creating a client.
+     * @param clazz   Table.
+     * @param <E>     Table template.
+     * @return Azure table connection instance.
+     */
     public static <E> MobileServiceTable<E> getTable(Context context, Class<E> clazz) {
         return getClient(context).getTable(clazz);
     }

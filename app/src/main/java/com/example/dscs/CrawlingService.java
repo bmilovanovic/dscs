@@ -8,6 +8,8 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.example.aninterface.Storable;
+import com.example.dscs.job.Job;
+import com.example.dscs.job.Task;
 import com.example.dscs.utility.PreferenceUtility;
 import com.example.dscs.utility.UiUtils;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
@@ -62,10 +64,6 @@ public class CrawlingService extends Service {
                     UiUtils.showJobFinishedNotification(getBaseContext(),
                             mCurrentJob.getClass().getSimpleName());
                 }
-
-                if (BuildConfig.DEBUG) {
-                    logLife();
-                }
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Couldn't connect to the Azure. Service stopped.", e);
             }
@@ -109,14 +107,11 @@ public class CrawlingService extends Service {
         mWorkingThread.start();
     }
 
-    private void logLife() {
-        long howLong = 0;
-        while (!Thread.currentThread().isInterrupted()) {
-            Log.d(TAG, "run: " + (howLong++) + "0s");
-            SystemClock.sleep(10000);
-        }
-    }
-
+    /**
+     * Takes next task and process it.
+     *
+     * @return Whether the task is successfully processed.
+     */
     private boolean processNextTask() {
         try {
             // If there are no more submitted tasks, go for those stuck in progress
@@ -128,6 +123,14 @@ public class CrawlingService extends Service {
         return false;
     }
 
+    /**
+     * Fetches next task from Azure and does all work for it: parse it and store it.
+     *
+     * @param taskStatus Specifies from which category should next task be fetched.
+     * @return Whether the task is successfully processed.
+     * @throws ExecutionException   Could not connect to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     private boolean processNextTaskAmong(int taskStatus) throws ExecutionException, InterruptedException {
         Query query = QueryOperations.field("status").eq(val(taskStatus));
         MobileServiceList<Task> submittedTasksList = mTaskTable.where(query).execute().get();
@@ -156,6 +159,14 @@ public class CrawlingService extends Service {
         return false;
     }
 
+    /**
+     * Changes status of a Task in Task table.
+     *
+     * @param task   Target task.
+     * @param status New status.
+     * @throws ExecutionException   Could not connect to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     private void updateTaskStatus(Task task, int status) throws ExecutionException, InterruptedException {
         task.setStatus(status);
         mTaskTable.update(task).get();

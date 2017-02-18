@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
 
+import com.example.dscs.job.Task;
 import com.example.dscs.utility.PreferenceUtility;
 import com.example.dscs.utility.UiUtils;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
@@ -16,6 +17,9 @@ import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Fragment holding various preferences.
+ */
 public class SettingsFragment extends PreferenceFragment {
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
@@ -25,13 +29,16 @@ public class SettingsFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        setChooseJobPref();
+        setupChooseJobPref();
         setupClearTablesPref();
         setupNumberOfTasksPref();
         setupCrawlingDelayPref();
     }
 
-    private void setChooseJobPref() {
+    /**
+     * Sets up job choosing preference.
+     */
+    private void setupChooseJobPref() {
         final ListPreference jobPref =
                 (ListPreference) findPreference(getString(R.string.pref_title_jobs));
         Preference.OnPreferenceChangeListener listener = new Preference.OnPreferenceChangeListener() {
@@ -46,6 +53,9 @@ public class SettingsFragment extends PreferenceFragment {
         initSummary(jobPref, listener);
     }
 
+    /**
+     * Sets up clear tables preference.
+     */
     private void setupClearTablesPref() {
         final ListPreference clearTablesPref =
                 (ListPreference) findPreference(getString(R.string.pref_title_clear_tables));
@@ -74,6 +84,9 @@ public class SettingsFragment extends PreferenceFragment {
         });
     }
 
+    /**
+     * Sets up number of tasks preference.
+     */
     private void setupNumberOfTasksPref() {
         final EditTextPreference numberOfTasksPref =
                 (EditTextPreference) findPreference(getString(R.string.pref_title_number_of_tasks));
@@ -90,6 +103,9 @@ public class SettingsFragment extends PreferenceFragment {
         initSummary(numberOfTasksPref, listener);
     }
 
+    /**
+     * Sets up crawling delay preference.
+     */
     private void setupCrawlingDelayPref() {
         final EditTextPreference crawlingDelayPref =
                 (EditTextPreference) findPreference(getString(R.string.pref_title_crawling_delay));
@@ -106,6 +122,12 @@ public class SettingsFragment extends PreferenceFragment {
         initSummary(crawlingDelayPref, listener);
     }
 
+    /**
+     * Deletes the data of a table on Azure.
+     *
+     * @param clazz Table.
+     * @param <E>   Table template.
+     */
     private <E> void clearTable(final Class<E> clazz) {
         UiUtils.showClearingTablesNotification(getActivity(), clazz.getSimpleName());
         MobileServiceTable<E> table = Network.getTable(getActivity(), clazz);
@@ -124,6 +146,12 @@ public class SettingsFragment extends PreferenceFragment {
         }
     }
 
+    /**
+     * Sets initial summary value.
+     *
+     * @param preference Preference which summary is set.
+     * @param listener   To set the value, listener is called with an empty data.
+     */
     private void initSummary(Preference preference, Preference.OnPreferenceChangeListener listener) {
         listener.onPreferenceChange(preference,
                 PreferenceManager.getDefaultSharedPreferences(preference.getContext())

@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- * Custom class to work with Google Material Design icons.
+ * Extended text view to work with Google Material Design icons.
  */
 public class IconFont extends TextView {
 

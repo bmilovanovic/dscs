@@ -14,15 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Adapter for showing all movie info.
+ * Adapter for showing all movie information.
  */
-class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieInfoViewHolder> implements View.OnClickListener {
+class MovieInfoAdapter extends RecyclerView.Adapter<MovieInfoAdapter.MovieInfoViewHolder>
+        implements View.OnClickListener {
 
     private final Context mContext;
 
     private List<MovieItem> mItems = new ArrayList<>();
 
-    MovieAdapter(Context context, List<MovieItem> items) {
+    MovieInfoAdapter(Context context, List<MovieItem> items) {
         mContext = context;
         mItems = items;
     }

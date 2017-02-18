@@ -96,6 +96,8 @@ public class StartFragment extends Fragment implements View.OnClickListener,
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "WiFi state changed. New one is: " + intent.getIntExtra(
+                        WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_DISABLED));
                 if (!isCrawlingServiceRunning() && intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,
                         WifiManager.WIFI_STATE_DISABLED) == WifiManager.WIFI_STATE_ENABLED) {
                     mStartButton.setTextColor(Color.DKGRAY);

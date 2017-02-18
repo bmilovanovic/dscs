@@ -1,9 +1,10 @@
-package com.example.dscs;
+package com.example.dscs.job;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.example.aninterface.Storable;
+import com.example.dscs.Network;
 import com.example.dscs.utility.PreferenceUtility;
 import com.example.movie.MovieHelper;
 import com.example.movie.MovieTask;
@@ -28,7 +29,7 @@ public class MovieJob extends Job {
     private static final int NUMBER_OF_MOVIES = 926;
 
     @Override
-    String getAzureUrl() {
+    public String getAzureUrl() {
         return AZURE_APP_URL;
     }
 
@@ -43,12 +44,19 @@ public class MovieJob extends Job {
     }
 
     @Override
-    void init(Context context) throws ExecutionException, InterruptedException {
+    public void init(Context context) throws ExecutionException, InterruptedException {
         if (PreferenceUtility.shouldInitTasks(context)) {
             initTasks(context);
         }
     }
 
+    /**
+     * Initializes Azure tasks table so work can start after.
+     *
+     * @param context Context for networking.
+     * @throws ExecutionException   Error connecting to Azure.
+     * @throws InterruptedException Somebody interrupted the network operation.
+     */
     private void initTasks(Context context) throws ExecutionException, InterruptedException {
         int numberOfTasks = Math.min(PreferenceUtility.getNumberOfTasks(context), NUMBER_OF_MOVIES);
         MobileServiceTable<Task> taskTable = Network.getTable(context, Task.class);

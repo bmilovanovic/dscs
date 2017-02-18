@@ -10,7 +10,7 @@ import android.support.v4.view.ViewPager;
 import com.example.dscs.preview.PreviewFragment;
 
 /**
- * One and only activity in the app. It is the placeholder for the three fragments.
+ * Placeholder for the three main fragments.
  */
 public class MainActivity extends Activity {
 
@@ -20,13 +20,15 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.activity_main_view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         viewPager.setCurrentItem(1);
-
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    /**
+     * Adapter for holding fragments in order.
+     */
+    public static class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
