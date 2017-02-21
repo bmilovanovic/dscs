@@ -1,6 +1,8 @@
 package com.example.dscs;
 
+import android.app.ActivityManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
@@ -74,7 +76,7 @@ public class CrawlingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: ");
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
@@ -185,9 +187,38 @@ public class CrawlingService extends Service {
         }
     }
 
+    /**
+     * Interface from the {@link CrawlingService} to the {@link StartFragment} to notify about the
+     * service status.
+     */
     public interface JobListener {
+        /**
+         * Notifies the fragment that the job is finished.
+         */
         void onJobFinished();
 
+        /**
+         * Called when task is being processed.
+         *
+         * @param statusMessage Message to display it to the user.
+         */
         void dispatchTaskStatusChange(String statusMessage);
+    }
+
+    /**
+     * Searches the services in the system for the crawling service.
+     *
+     * @param context Context for getting activity manager.
+     * @return Whether the service is running or not.
+     */
+    public static boolean isRunning(Context context) {
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceInfo.service.getClassName().equals(CrawlingService.class.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

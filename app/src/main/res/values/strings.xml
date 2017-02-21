@@ -20,7 +20,12 @@
 
     <string name="pref_title_init_tasks">Initialize tasks</string>
 
-    <string name="pref_title_launch_memory_game">Launch memory game</string>
+    <string name="disabled">Disabled</string>
+    <string name="enabled">Enabled</string>
+
+    <string name="pref_title_delete_score">Delete the highest score</string>
+    <string name="pref_summary_delete_score">The highest score is </string>
+    <string name="pref_are_you_sure">Are you sure?</string>
 
     <!-- StartFragment -->
     <string name="if_play_circle_outline">&#xE039;</string>
@@ -52,7 +57,7 @@
 
     <!-- Game messages -->
     <string name="activity_game_score">Rezultat: %d</string>
-    <string name="activity_game_do_you_want_to_start_again">Postigli ste %d poena. Da li želite da igrate ponovo?</string>
+    <string name="activity_game_do_you_want_to_start_again">Postigli ste %1$d poena. Najveći broj poena do sada je %2$d . Da li želite da igrate ponovo?</string>
     <string name="activity_game_game_over">Kraj igre!</string>
     <string name="yes">Da</string>
     <string name="no">Ne</string>

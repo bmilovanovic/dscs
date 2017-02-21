@@ -45,8 +45,9 @@ interface GameViewInterface {
     /**
      * The user didn't succeed to connect all the pairs in a level. Proposes to user to try again.
      *
-     * @param score Total score in all levels.
+     * @param score        Total score in all levels.
+     * @param highestScore Highest score after last reset.
      */
-    void gameOver(int score);
+    void gameOver(int score, int highestScore);
 
 }

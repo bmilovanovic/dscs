@@ -74,4 +74,27 @@ public class PreferenceUtility {
                 context.getString(prefKeyId), context.getString(defaultValueId));
         return Integer.valueOf(stringVal);
     }
+
+    /**
+     * Reads the highest score preference value.
+     *
+     * @param context Context for getting shared preferences.
+     * @return Integer value.
+     */
+    public static int getHighestScore(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getInt(context.getString(R.string.pref_title_delete_score), 0);
+    }
+
+    /**
+     * Writes the highest score preference value.
+     *
+     * @param context  Context for getting shared preferences.
+     * @param newScore New integer value.
+     */
+    public static void setHighestScore(Context context, int newScore) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences.edit()
+                .putInt(context.getString(R.string.pref_title_delete_score), newScore).apply();
+    }
 }

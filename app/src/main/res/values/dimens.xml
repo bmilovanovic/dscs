@@ -7,7 +7,7 @@
     <!-- MovieInfo -->
     <dimen name="movie_info_margin">8dp</dimen>
     <dimen name="movie_info_thumbnail_width">60dp</dimen>
-    <dimen name="movie_info_thumbnail_text_size">40dp</dimen>
+    <dimen name="movie_info_thumbnail_text_size">30dp</dimen>
     <dimen name="movie_info_title_text_size">24sp</dimen>
     <dimen name="movie_info_category_text_size">12sp</dimen>
     <dimen name="fragment_preview_item_icon_size">16dp</dimen>

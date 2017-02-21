@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.example.dscs.Network;
+import com.example.dscs.utility.PreferenceUtility;
 import com.example.movie.tables.Film;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
 import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
@@ -199,7 +200,11 @@ class GameEngine implements GameEngineInterface {
                 public void run() {
                     if (!mLevelCompleted) {
                         // User didn't connect all the tiles. This game is over.
-                        mView.gameOver(mScore);
+                        int highestScore = PreferenceUtility.getHighestScore((Context) mView);
+                        mView.gameOver(mScore, highestScore);
+                        if (mScore > highestScore) {
+                            PreferenceUtility.setHighestScore((Context) mView, mScore);
+                        }
                     } else {
                         // User completed the level. Load the next one.
                         mCurrentLevel++;

@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.util.Log;
 
 import com.example.dscs.job.Task;
+import com.example.dscs.utility.CustomDialogPreference;
 import com.example.dscs.utility.PreferenceUtility;
 import com.example.dscs.utility.UiUtils;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
@@ -33,6 +34,7 @@ public class SettingsFragment extends PreferenceFragment {
         setupClearTablesPref();
         setupNumberOfTasksPref();
         setupCrawlingDelayPref();
+        setupDeleteScorePref();
     }
 
     /**
@@ -144,6 +146,27 @@ public class SettingsFragment extends PreferenceFragment {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Sets up delete score preference.
+     */
+    private void setupDeleteScorePref() {
+        final CustomDialogPreference highestScorePref =
+                (CustomDialogPreference) findPreference(getString(R.string.pref_title_delete_score));
+
+        Preference.OnPreferenceChangeListener listener = new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                String summary = getString(R.string.pref_summary_delete_score) + " " + newValue;
+                highestScorePref.setSummary(summary);
+                return true;
+            }
+        };
+        highestScorePref.setOnPreferenceChangeListener(listener);
+        listener.onPreferenceChange(highestScorePref,
+                PreferenceManager.getDefaultSharedPreferences(highestScorePref.getContext())
+                        .getInt(highestScorePref.getKey(), 0));
     }
 
     /**

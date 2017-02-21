@@ -1,15 +1,11 @@
 package com.example.dscs;
 
-import android.app.ActivityManager;
 import android.app.Fragment;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Color;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -32,6 +28,8 @@ public class StartFragment extends Fragment implements View.OnClickListener,
         CrawlingService.JobListener {
 
     private static final String TAG = StartFragment.class.getSimpleName();
+
+    private static final long DISABLE_BUTTON_DURATION = 3000;
 
     private TextView mStartButton;
     private TextView mJobInfoTextView;
@@ -85,40 +83,29 @@ public class StartFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        setupWiFiReceiver();
-        startAndBindService();
-    }
-
-    /**
-     * When the enabled WiFi event is received, start a service if it's not started.
-     */
-    private void setupWiFiReceiver() {
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "WiFi state changed. New one is: " + intent.getIntExtra(
-                        WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_DISABLED));
-                if (!isCrawlingServiceRunning() && intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,
-                        WifiManager.WIFI_STATE_DISABLED) == WifiManager.WIFI_STATE_ENABLED) {
-                    mStartButton.setTextColor(Color.DKGRAY);
-                    mStartButton.setEnabled(false);
-                    if (!isCrawlingServiceRunning()) {
-                        startAndBindService();
-                    }
-                }
-            }
-        };
-
-        final IntentFilter filters = new IntentFilter();
-        filters.addAction("android.net.wifi.WIFI_STATE_CHANGED");
-        filters.addAction("android.net.wifi.STATE_CHANGE");
-        getActivity().registerReceiver(receiver, filters);
+        if (!CrawlingService.isRunning(getActivity())) {
+            getActivity().startService(getServiceIntent());
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        refreshButtonState();
+        if (mBinder == null && CrawlingService.isRunning(getActivity())) {
+            getActivity().bindService(getServiceIntent(), mServiceConnection,
+                    Context.BIND_AUTO_CREATE);
+        } else {
+            refreshButtonState();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (mBinder != null && CrawlingService.isRunning(getActivity())) {
+            getActivity().unbindService(mServiceConnection);
+            mBinder = null;
+        }
+        super.onPause();
     }
 
     @Override
@@ -127,12 +114,17 @@ public class StartFragment extends Fragment implements View.OnClickListener,
             case R.id.start_button:
                 mStartButton.setTextColor(Color.DKGRAY);
                 mStartButton.setEnabled(false);
-                if (isCrawlingServiceRunning()) {
-                    getActivity().unbindService(mServiceConnection);
+                if (CrawlingService.isRunning(getActivity())) {
+                    if (mBinder != null) {
+                        getActivity().unbindService(mServiceConnection);
+                        mBinder = null;
+                    }
                     getActivity().stopService(getServiceIntent());
                     mServiceConnection.onServiceDisconnected(getActivity().getComponentName());
                 } else {
-                    startAndBindService();
+                    getActivity().startService(getServiceIntent());
+                    getActivity().bindService(getServiceIntent(), mServiceConnection,
+                            Context.BIND_AUTO_CREATE);
                 }
         }
     }
@@ -158,29 +150,13 @@ public class StartFragment extends Fragment implements View.OnClickListener,
         });
     }
 
-    private boolean startAndBindService() {
-        if (!isCrawlingServiceRunning()) {
-            getActivity().startService(getServiceIntent());
-        }
-        return getActivity().bindService(getServiceIntent(),
-                mServiceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    private boolean isCrawlingServiceRunning() {
-        final ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-
-        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceInfo.service.getClassName().equals(CrawlingService.class.getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Depending on a job and service state, set the button icon, color and the animation.
+     */
     private void refreshButtonState() {
         final int colorId;
         final Animation animation;
-        if (isCrawlingServiceRunning()) {
+        if (CrawlingService.isRunning(getActivity())) {
             if (mBinder != null && mBinder.isFinished()) {
                 colorId = android.R.color.holo_green_dark;
                 animation = null;
@@ -201,6 +177,10 @@ public class StartFragment extends Fragment implements View.OnClickListener,
             animation = UiUtils.getTiltingAnimation();
         }
 
+        if (mStartButton.getCurrentTextColor() != Color.DKGRAY) {
+            mStartButton.setTextColor(ContextCompat.getColor(getActivity(), colorId));
+        }
+
         if (animation != null) {
             mStartButton.startAnimation(animation);
         } else {
@@ -215,7 +195,7 @@ public class StartFragment extends Fragment implements View.OnClickListener,
                     mStartButton.setEnabled(true);
                 }
             }
-        }, 3000);
+        }, DISABLE_BUTTON_DURATION);
     }
 
     private Intent getServiceIntent() {

@@ -162,11 +162,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void gameOver(int score) {
+    public void gameOver(int score, int highestScore) {
         mDialog.dismiss();
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.activity_game_game_over))
-                .setMessage(getString(R.string.activity_game_do_you_want_to_start_again, score))
+                .setMessage(String.format(getString(R.string.activity_game_do_you_want_to_start_again), score, highestScore))
                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

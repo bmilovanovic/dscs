@@ -22,8 +22,16 @@
         android:summary="@string/pref_summary_clear_tables"
         android:title="@string/pref_title_clear_tables" />
 
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_title_init_tasks"
+        android:summaryOff="@string/disabled"
+        android:summaryOn="@string/enabled"
+        android:title="@string/pref_title_init_tasks" />
+
     <EditTextPreference
         android:defaultValue="@string/pref_default_number_of_tasks"
+        android:dependency="@string/pref_title_init_tasks"
         android:inputType="number"
         android:key="@string/pref_title_number_of_tasks"
         android:selectAllOnFocus="true"
@@ -37,9 +45,12 @@
         android:selectAllOnFocus="true"
         android:title="@string/pref_title_crawling_delay" />
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="@string/pref_title_init_tasks"
-        android:title="@string/pref_title_init_tasks" />
+    <com.example.dscs.utility.CustomDialogPreference
+        android:defaultValue="1"
+        android:dialogMessage="@string/pref_are_you_sure"
+        android:key="@string/pref_title_delete_score"
+        android:negativeButtonText="No"
+        android:positiveButtonText="Yes"
+        android:title="@string/pref_title_delete_score" />
 
 </PreferenceScreen>
