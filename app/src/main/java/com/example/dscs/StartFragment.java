@@ -35,13 +35,14 @@ public class StartFragment extends Fragment implements View.OnClickListener,
     private TextView mJobInfoTextView;
     private TextView mTaskInfoTextView;
     private CrawlingService.CrawlingServiceBinder mBinder;
+    private boolean mIsServiceFinished;
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i(TAG, "Service is connected.");
             mBinder = (CrawlingService.CrawlingServiceBinder) service;
-            mBinder.setOnJobFinishedListener(StartFragment.this);
+            mBinder.mService.setOnJobFinishedListener(StartFragment.this);
             refreshButtonState();
         }
 
@@ -85,6 +86,7 @@ public class StartFragment extends Fragment implements View.OnClickListener,
     public void onViewCreated(View view, Bundle savedInstanceState) {
         if (!CrawlingService.isRunning(getActivity())) {
             getActivity().startService(getServiceIntent());
+            mIsServiceFinished = false;
         }
     }
 
@@ -125,6 +127,7 @@ public class StartFragment extends Fragment implements View.OnClickListener,
                     getActivity().startService(getServiceIntent());
                     getActivity().bindService(getServiceIntent(), mServiceConnection,
                             Context.BIND_AUTO_CREATE);
+                    mIsServiceFinished = false;
                 }
         }
     }
@@ -132,6 +135,7 @@ public class StartFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onJobFinished() {
         Log.i(TAG, "onJobFinished: " + mBinder);
+        mIsServiceFinished = true;
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -157,7 +161,7 @@ public class StartFragment extends Fragment implements View.OnClickListener,
         final int colorId;
         final Animation animation;
         if (CrawlingService.isRunning(getActivity())) {
-            if (mBinder != null && mBinder.isFinished()) {
+            if (mBinder != null && mIsServiceFinished) {
                 colorId = android.R.color.holo_green_dark;
                 animation = null;
                 mStartButton.setText(getString(R.string.if_sentiment_very_satisfied));

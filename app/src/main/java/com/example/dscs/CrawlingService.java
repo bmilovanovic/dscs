@@ -31,7 +31,7 @@ public class CrawlingService extends Service {
     private static final String TAG = CrawlingService.class.getSimpleName();
     private Job mCurrentJob;
 
-    private final CrawlingServiceBinder mBinder = new CrawlingServiceBinder();
+    private final CrawlingServiceBinder mBinder = new CrawlingServiceBinder(this);
 
     private MobileServiceTable<Task> mTaskTable;
 
@@ -39,9 +39,8 @@ public class CrawlingService extends Service {
         @Override
         public void run() {
             while (mCurrentJob == null) {
-                SystemClock.sleep(1000);
+                SystemClock.sleep(3000);
             }
-            mBinder.mIsFinished = false;
             Log.d(TAG, "Working thread just started working on a " +
                     mCurrentJob.getClass().getSimpleName());
             try {
@@ -58,10 +57,9 @@ public class CrawlingService extends Service {
                     return;
                 }
 
-                if (mBinder.mJobListener.get() != null) {
+                if (mJobListener.get() != null) {
                     UiUtils.showAllTasksDoneToast(getApplicationContext());
-                    mBinder.mIsFinished = true;
-                    mBinder.mJobListener.get().onJobFinished();
+                    mJobListener.get().onJobFinished();
                 } else {
                     UiUtils.showJobFinishedNotification(getBaseContext(),
                             mCurrentJob.getClass().getSimpleName());
@@ -72,6 +70,8 @@ public class CrawlingService extends Service {
             stopSelf();
         }
     });
+
+    private WeakReference<JobListener> mJobListener;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -143,13 +143,17 @@ public class CrawlingService extends Service {
             updateTaskStatus(nextTask, Task.IN_PROGRESS);
 
             // Parse the task
-            mBinder.mJobListener.get().dispatchTaskStatusChange(getString(
-                    R.string.parsing_task_with_key, nextTask.getKey()));
+            if (mJobListener.get() != null) {
+                mJobListener.get().dispatchTaskStatusChange(getString(
+                        R.string.parsing_task_with_key, nextTask.getKey()));
+            }
             Storable parsedItem = mCurrentJob.parseTask(getApplicationContext(), nextTask.getKey());
 
             // Store the task
-            mBinder.mJobListener.get().dispatchTaskStatusChange(getString(
-                    R.string.storing_task_with_key, nextTask.getKey()));
+            if (mJobListener.get() != null) {
+                mJobListener.get().dispatchTaskStatusChange(getString(
+                        R.string.storing_task_with_key, nextTask.getKey()));
+            }
             if (parsedItem != null) {
                 parsedItem.store();
                 updateTaskStatus(nextTask, Task.DONE);
@@ -175,16 +179,15 @@ public class CrawlingService extends Service {
     }
 
     public class CrawlingServiceBinder extends Binder {
-        WeakReference<JobListener> mJobListener = new WeakReference<>(null);
-        private boolean mIsFinished = false;
+        final CrawlingService mService;
 
-        void setOnJobFinishedListener(StartFragment onJobFinishedListener) {
-            mJobListener = new WeakReference<JobListener>(onJobFinishedListener);
+        CrawlingServiceBinder(CrawlingService service) {
+            mService = service;
         }
+    }
 
-        boolean isFinished() {
-            return mIsFinished;
-        }
+    void setOnJobFinishedListener(JobListener onJobFinishedListener) {
+        mJobListener = new WeakReference<>(onJobFinishedListener);
     }
 
     /**
