@@ -61,6 +61,10 @@ public class SettingsFragment extends PreferenceFragment {
     private void setupClearTablesPref() {
         final ListPreference clearTablesPref =
                 (ListPreference) findPreference(getString(R.string.pref_title_clear_tables));
+        if (!BuildConfig.DEBUG) {
+            getPreferenceScreen().removePreference(clearTablesPref);
+            return;
+        }
         clearTablesPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {

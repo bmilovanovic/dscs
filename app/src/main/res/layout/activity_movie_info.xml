@@ -27,6 +27,7 @@
                 android:layout_marginRight="@dimen/movie_info_margin"
                 android:background="@color/preference_fallback_accent_color"
                 android:gravity="center"
+                android:lines="1"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/movie_info_thumbnail_text_size"
