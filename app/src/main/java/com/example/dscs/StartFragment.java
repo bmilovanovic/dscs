@@ -146,12 +146,7 @@ public class StartFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void dispatchTaskStatusChange(final String statusMessage) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                mTaskInfoTextView.setText(statusMessage);
-            }
-        });
+        mTaskInfoTextView.setText(statusMessage);
     }
 
     /**

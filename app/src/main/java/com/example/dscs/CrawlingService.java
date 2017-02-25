@@ -5,7 +5,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -71,7 +73,7 @@ public class CrawlingService extends Service {
         }
     });
 
-    private WeakReference<JobListener> mJobListener;
+    private WeakReference<JobListener> mJobListener = new WeakReference<>(null);
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -99,6 +101,12 @@ public class CrawlingService extends Service {
             mWorkingThread.interrupt();
             mWorkingThread = null;
         }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dispatchStatus("Service stopped.");
+            }
+        }, 1000);
         super.onDestroy();
     }
 
@@ -143,17 +151,11 @@ public class CrawlingService extends Service {
             updateTaskStatus(nextTask, Task.IN_PROGRESS);
 
             // Parse the task
-            if (mJobListener.get() != null) {
-                mJobListener.get().dispatchTaskStatusChange(getString(
-                        R.string.parsing_task_with_key, nextTask.getKey()));
-            }
+            dispatchStatus(getString(R.string.parsing_task_with_key, nextTask.getKey()));
             Storable parsedItem = mCurrentJob.parseTask(getApplicationContext(), nextTask.getKey());
 
             // Store the task
-            if (mJobListener.get() != null) {
-                mJobListener.get().dispatchTaskStatusChange(getString(
-                        R.string.storing_task_with_key, nextTask.getKey()));
-            }
+            dispatchStatus(getString(R.string.storing_task_with_key, nextTask.getKey()));
             if (parsedItem != null) {
                 parsedItem.store();
                 updateTaskStatus(nextTask, Task.DONE);
@@ -176,6 +178,22 @@ public class CrawlingService extends Service {
     private void updateTaskStatus(Task task, int status) throws ExecutionException, InterruptedException {
         task.setStatus(status);
         mTaskTable.update(task).get();
+    }
+
+    /**
+     * If the view reference is alive, dispatch a status change to it.
+     *
+     * @param newStatus New status message.
+     */
+    private void dispatchStatus(final String newStatus) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                if (mJobListener.get() != null) {
+                    mJobListener.get().dispatchTaskStatusChange(newStatus);
+                }
+            }
+        });
     }
 
     public class CrawlingServiceBinder extends Binder {
