@@ -177,10 +177,10 @@ public class MovieHelper {
         Person person = new Person();
         person.setName(personName);
 
-        persons = personTable.where().orderBy("personId", QueryOrder.Ascending).execute().get();
+        persons = personTable.where().top(5).orderBy("personId", QueryOrder.Descending).execute().get();
         int highestPersonId = -1;
         if (persons.size() > 0) {
-            highestPersonId = persons.get(persons.size() - 1).getPersonId();
+            highestPersonId = persons.get(0).getPersonId();
         }
         person.setPersonId(highestPersonId + 1);
 

@@ -1,5 +1,6 @@
 package com.example.movie;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.aninterface.Parsable;
@@ -74,10 +75,13 @@ public class MovieTask extends MovieBean implements Parsable, Storable {
         for (Element link : doc.select("a[href]")) {
 
             String linkCaption = link.text();
-            if (linkCaption.isEmpty())
+            if (linkCaption.isEmpty() || linkCaption.contains("."))
                 continue;
 
             String linkCategory = extractCategoryFromLink(link.attr("href"));
+            if (TextUtils.isEmpty(linkCategory) || linkCategory.contains(".")) {
+                continue;
+            }
 
             Log.d(TAG, "Parsing, linkCategory: " + linkCategory + " linkCaption: " + linkCaption);
             switch (linkCategory) {
